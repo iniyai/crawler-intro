@@ -2,7 +2,7 @@ package com.indix.bootcamp.crawler
 
 import edu.uci.ics.crawler4j.crawler.{Page, WebCrawler}
 import edu.uci.ics.crawler4j.parser.HtmlParseData
-import com.indix.bootcamp.parser.{Parser, FlipkartParser}
+import com.indix.bootcamp.parser.{JabongParser, Parser, FlipkartParser}
 import java.io.{PrintWriter, File}
 import scala.util.Random
 import edu.uci.ics.crawler4j.url.WebURL
@@ -22,6 +22,8 @@ abstract class BaseCrawler extends WebCrawler {
     "(?i)(.*(\\.(pdf|flv))(\\?.*)*)$"
   )
 
+  def shouldParse(url: String): Boolean
+
   override def shouldVisit(url: WebURL): Boolean = {
     val urlStr = url.getURL
     !excludeFilters.exists(urlStr.matches)
@@ -29,12 +31,15 @@ abstract class BaseCrawler extends WebCrawler {
 
   override def visit(page: Page) {
     println(s"Fetched ${page.getWebURL.getURL} from ${page.getWebURL.getAnchor}")
+
     page.getParseData match {
       case data: HtmlParseData =>
         val result = parser.parse(data.getHtml, page.getWebURL.getURL)
+
         println(s"Parsed successfully as ${result}")
         writer.append(result.toCsv)
         writer.append("\n")
+        writer.flush()
     }
   }
 
@@ -45,4 +50,13 @@ abstract class BaseCrawler extends WebCrawler {
 
 class FlipkartCrawler extends BaseCrawler {
   override val parser: Parser = new FlipkartParser
+
+  override def shouldParse(url: String): Boolean = url.matches(s"*/p/.*")
+}
+
+class JabongCrawler extends BaseCrawler {
+  override val parser: Parser = new JabongParser
+
+  override def shouldParse(url: String):Boolean = true
+
 }

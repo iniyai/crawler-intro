@@ -5,6 +5,9 @@ case class Product(name: String, description: String, url: String) {
 }
 
 case class Price(listPrice: Double, salePrice: Double) {
+  override def toString = {
+    listPrice + " " + salePrice
+  }
   def toCsv = List(listPrice, salePrice).mkString(",")
 }
 

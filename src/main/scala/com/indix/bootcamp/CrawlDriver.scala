@@ -3,7 +3,7 @@ package com.indix.bootcamp
 import edu.uci.ics.crawler4j.crawler.{CrawlConfig, CrawlController}
 import edu.uci.ics.crawler4j.robotstxt.{RobotstxtConfig, RobotstxtServer}
 import edu.uci.ics.crawler4j.fetcher.PageFetcher
-import com.indix.bootcamp.crawler.FlipkartCrawler
+import com.indix.bootcamp.crawler.{JabongCrawler, FlipkartCrawler}
 import java.io.File
 
 object CrawlDriver extends App {
@@ -18,6 +18,9 @@ object CrawlDriver extends App {
   config.setMaxDepthOfCrawling(3)
   config.setMaxPagesToFetch(1000)
   config.setResumableCrawling(true) // Enable as required
+  config.setProxyHost("proxy.production.indix.tv")
+  config.setProxyPort(8080)
+  config.setUserAgentString("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36")
   // TODO: Add proxy support for your crawler to not get blocked.
   /*
     How Proxy works
@@ -40,7 +43,7 @@ object CrawlDriver extends App {
    * URLs that are fetched and then the crawler starts following links
    * which are found in these pages
    */
-  controller.addSeed("http://www.flipkart.com")
+  controller.addSeed("http://www.flipkart.com/")
 
   /*
    * Start the crawl. This is a blocking operation, meaning that your code
